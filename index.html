@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0e14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>VTY57.NET • Sát Cánh Cùng Chiến Thắng Của Bạn</title>
+  <style>
+    /* Reset & Base Setup */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #0b0e14;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Ambient Luxury Background */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: 
+        radial-gradient(circle at 50% 10%, rgba(255, 102, 0, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 80% 90%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 10% 85%, rgba(255, 69, 0, 0.1) 0%, transparent 50%),
+        linear-gradient(180deg, #090c12 0%, #0b0e14 50%, #06080c 100%);
+    }
+
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+      pointer-events: none;
+    }
+
+    /* Container: Locked Mobile Aspect & 100dvh fit */
+    .mobile-screen {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 440px;
+      height: 100%;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(14px, 3vh, 24px) clamp(16px, 5vw, 24px);
+      padding-top: calc(clamp(14px, 3vh, 24px) + env(safe-area-inset-top));
+      padding-bottom: calc(clamp(14px, 3vh, 24px) + env(safe-area-inset-bottom));
+    }
+
+    /* Top Status Bar */
+    .header-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.28);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      color: #34d399;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .pulse-dot {
+      width: 7.5px;
+      height: 7.5px;
+      background-color: #10b981;
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .pulse-dot::after {
+      content: "";
+      position: absolute;
+      inset: -3.5px;
+      border-radius: 50%;
+      border: 2px solid #10b981;
+      animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(0.6);
+        opacity: 0.9;
+      }
+      70%, 100% {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+    }
+
+    /* Main Brand Section */
+    .brand-section {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .logo-wrapper {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .logo-glow {
+      position: absolute;
+      inset: -8px;
+      background: linear-gradient(135deg, #ff6600, #ff3300);
+      border-radius: 26px;
+      filter: blur(14px);
+      opacity: 0.55;
+      animation: logoGlow 3.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes logoGlow {
+      from { opacity: 0.4; filter: blur(12px); transform: scale(0.96); }
+      to { opacity: 0.7; filter: blur(18px); transform: scale(1.04); }
+    }
+
+    .logo-box, .brand-logo-img {
+      position: relative;
+      width: clamp(74px, 15vw, 86px);
+      height: clamp(74px, 15vw, 86px);
+      border-radius: 22px;
+      display: block;
+      object-fit: cover;
+      border: 1.5px solid rgba(255, 220, 160, 0.5);
+      box-shadow: 
+        0 12px 30px rgba(255, 69, 0, 0.45),
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo-box svg {
+      width: 58%;
+      height: 58%;
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
+    }
+
+    .brand-name {
+      font-size: clamp(23px, 6vw, 27px);
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #ffffff 20%, #e2e8f0 70%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+
+    .brand-badge {
+      font-size: 11px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 1px 7px;
+      border-radius: 6px;
+      letter-spacing: 0.8px;
+      vertical-align: middle;
+    }
+
+    .brand-slogan {
+      font-size: clamp(11.5px, 3vw, 13px);
+      font-weight: 700;
+      color: #f59e0b;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      max-width: 95%;
+      margin: 0 auto;
+      text-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+    }
+
+    /* Offers Box (3 mục ưu đãi) */
+    .offers-card {
+      background: rgba(18, 24, 38, 0.7);
+      border: 1px solid rgba(255, 165, 0, 0.18);
+      border-radius: 18px;
+      padding: clamp(10px, 1.8vh, 14px);
+      box-shadow: 
+        0 14px 35px rgba(0, 0, 0, 0.45),
+        inset 0 1px 1px rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(8px, 1.2vh, 10px);
+    }
+
+    .offer-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: clamp(9px, 1.4vh, 11px) 12px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .offer-item:active {
+      transform: scale(0.985);
+      border-color: rgba(255, 102, 0, 0.4);
+    }
+
+    .offer-icon-wrap {
+      width: 34px;
+      height: 34px;
+      min-width: 34px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .icon-shield {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(249, 115, 22, 0.1));
+      border-color: rgba(239, 68, 68, 0.25);
+    }
+
+    .icon-gift {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(234, 179, 8, 0.1));
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+
+    .icon-zap {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(16, 185, 129, 0.1));
+      border-color: rgba(59, 130, 246, 0.25);
+    }
+
+    .offer-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      text-align: left;
+    }
+
+    .offer-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .offer-title {
+      font-size: clamp(13px, 3.4vw, 14.5px);
+      font-weight: 700;
+      color: #f8fafc;
+      letter-spacing: 0.1px;
+    }
+
+    .offer-subtitle {
+      font-size: clamp(9.5px, 2.5vw, 11px);
+      color: #94a3b8;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: -0.15px;
+    }
+
+    .tag-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .tag-orange {
+      background: rgba(255, 102, 0, 0.15);
+      color: #ff8c00;
+      border: 1px solid rgba(255, 102, 0, 0.3);
+    }
+
+    .tag-gold {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .tag-green {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* CTA Section */
+    .cta-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-cta {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      height: clamp(52px, 8vh, 60px);
+      background: linear-gradient(90deg, #ff5e00 0%, #ff8c00 50%, #ff5e00 100%);
+      background-size: 200% auto;
+      border-radius: 14px;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: clamp(15px, 4vw, 17px);
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 
+        0 8px 25px rgba(255, 94, 0, 0.5),
+        0 2px 6px rgba(0, 0, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      animation: btnBreath 3s infinite ease-in-out;
+    }
+
+    .btn-cta:active {
+      transform: scale(0.97);
+      box-shadow: 0 4px 14px rgba(255, 94, 0, 0.4);
+    }
+
+    @keyframes btnBreath {
+      0%, 100% {
+        box-shadow: 0 8px 24px rgba(255, 94, 0, 0.48);
+      }
+      50% {
+        box-shadow: 0 12px 32px rgba(255, 120, 0, 0.75);
+      }
+    }
+
+    /* Shimmer Sweep Animation */
+    .btn-cta::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -120%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.45) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: skewX(-25deg);
+      animation: shimmerSweep 2.5s infinite ease-in-out;
+    }
+
+    @keyframes shimmerSweep {
+      0% {
+        left: -120%;
+      }
+      35%, 100% {
+        left: 180%;
+      }
+    }
+
+    .btn-arrow {
+      font-size: 19px;
+      line-height: 1;
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-cta:hover .btn-arrow,
+    .btn-cta:active .btn-arrow {
+      transform: translateX(4px);
+    }
+
+    /* Trust Footer */
+    .trust-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .trust-item svg {
+      width: 12px;
+      height: 12px;
+      fill: currentColor;
+    }
+
+    .trust-dot {
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background decorative layers -->
+  <div class="bg-canvas">
+    <div class="bg-grid"></div>
+  </div>
+
+  <!-- Mobile screen container (100dvh fit) -->
+  <main class="mobile-screen">
+
+    <!-- Top status bar -->
+    <header class="header-bar">
+      <div class="status-badge">
+        <span class="pulse-dot"></span>
+        <span>Hệ Thống Trực Tuyến • Bảo Mật 24/7</span>
+      </div>
+    </header>
+
+    <!-- Brand Identity & Logo -->
+    <section class="brand-section">
+      <div class="logo-wrapper">
+        <div class="logo-glow"></div>
+        <img src="logo.png" alt="VTY57.NET Logo" class="brand-logo-img">
+      </div>
+      <h1 class="brand-name">
+        VTY57.NET
+      </h1>
+      <p class="brand-slogan">SÁT CÁNH CÙNG CHIẾN THẮNG CỦA BẠN</p>
+    </section>
+
+    <!-- Offers Box (Khung 3 ưu đãi trọng tâm) -->
+    <section class="offers-card" aria-label="Khuyến mãi nổi bật">
+      
+      <!-- Mục 1: Khuyến mãi nạp -->
+      <div class="offer-item">
+        <div class="offer-icon-wrap icon-shield">🛡️</div>
+        <div class="offer-info">
+          <div class="offer-header-row">
+            <div class="offer-title">Khuyến mãi nạp</div>
+            <span class="tag-badge tag-orange">Tổng 3Tr6</span>
+          </div>
+          <div class="offer-subtitle">Ưu đãi độc quyền 4 lần nạp tổng 3Tr600</div>
+        </div>
+      </div>
+
+      <!-- Mục 2: Khuyến mãi phơi đơn -->
+      <div class="offer-item">
+        <div class="offer-icon-wrap icon-gift">🎁</div>
+        <div class="offer-info">
+          <div class="offer-header-row">
+            <div class="offer-title">Khuyến mãi phơi đơn</div>
+            <span class="tag-badge tag-gold">Nhận 98K</span>
+          </div>
+          <div class="offer-subtitle">Hoàn trả không giới hạn mỗi ngày</div>
+        </div>
+      </div>
+
+      <!-- Mục 3: Rút tiền siêu tốc -->
+      <div class="offer-item">
+        <div class="offer-icon-wrap icon-zap">⚡</div>
+        <div class="offer-info">
+          <div class="offer-header-row">
+            <div class="offer-title">Rút tiền siêu tốc</div>
+            <span class="tag-badge tag-green">Bảo Mật 24/7</span>
+          </div>
+          <div class="offer-subtitle">Giao dịch ngân hàng bảo mật - an toàn - tự động 24/7</div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- CTA & Footer Trust Signals -->
+    <footer class="cta-container">
+      <a href="https://vty57.net" target="_top" class="btn-cta" id="ctaButton">
+        <span>ĐĂNG KÝ: VTY57.NET</span>
+        <span class="btn-arrow">➔</span>
+      </a>
+
+      <div class="trust-footer">
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+          <span>Mã Hóa SSL 256-Bit</span>
+        </div>
+        <span class="trust-dot">•</span>
+        <div class="trust-item">
+          <span>⚡ Ping: 18ms</span>
+        </div>
+        <span class="trust-dot">•</span>
+        <div class="trust-item">
+          <span>18+ An Toàn</span>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    // Tối ưu hóa trải nghiệm click tức thì không có độ trễ trên thiết bị di động
+    document.getElementById('ctaButton').addEventListener('touchstart', function() {}, {passive: true});
+  </script>
+</body>
+</html>
